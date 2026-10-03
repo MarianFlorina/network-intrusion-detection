@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtualenv
+.venv/
+venv/
+env/
+
+# Environment / secrets
+.env
+
+# Data (versioned with DVC, not git)
+data/
+!data/.gitkeep
+
+# MLflow local tracking store
+mlruns/
+mlruns-test/
+mlartifacts/
+
+# Local SQLite fallback DB
+*.db
+
+# DVC cache
+.dvc/cache/
+.dvc/tmp/
+
+# Model artifacts
+models/
+*.joblib
+*.pkl
+
+# Airflow
+airflow/logs/
+airflow/*.db
+airflow/*.cfg
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

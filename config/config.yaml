@@ -1,0 +1,72 @@
+project:
+  name: network-anomaly-detection
+  experiment_name: Network-Anomaly-Detection
+  registry_model_name: NetworkAnomalyDetector
+  registry_alias: champion          # modern aliases API (stages are deprecated)
+  random_state: 42
+
+data:
+  raw_dir: data/raw
+  processed_dir: data/processed
+  drift_dir: data/drift
+  train_ratio: 0.70
+  validation_ratio: 0.15
+  test_ratio: 0.15
+  drift_batch_size: 20000          # rows per synthetic "live day" batch
+  drift_day: 1                     # which simulated day to generate next
+
+training:
+  # Model zoo compared on every training run (all logged to MLflow)
+  models:
+    - random_forest
+    - xgboost
+    - isolation_forest
+    - one_class_svm
+    - autoencoder
+  # Model registered as Production candidate after comparison
+  candidate_model: xgboost
+  numeric_features:
+    - duration
+    - src_bytes
+    - dst_bytes
+    - count
+    - srv_count
+    - same_srv_rate
+    - diff_srv_rate
+    - src_port_entropy
+    - packet_rate
+    - connection_duration_std
+    - failed_logins
+    - bytes_per_packet
+  categorical_features:
+    - protocol
+    - service
+    - flag
+  label_column: attack_type
+  validation:                      # promotion gate (registry champion/challenger)
+    min_f1: 0.90
+    min_precision: 0.85
+    min_recall: 0.85
+    min_f1_improvement: 0.002      # challenger must beat champion by this F1
+
+drift:
+  psi_warn: 0.10                   # PSI >= 0.10 on a feature -> warning
+  psi_drift: 0.20                  # PSI >= 0.20 on a feature -> drift signal
+  ks_alpha: 0.01                   # KS-test significance for numeric features
+  min_feature_drift_share: 0.20    # >=20% of monitored features drifted -> retrain
+  min_recent_rows: 5000            # minimum live rows before evaluating drift
+  perf:
+    min_f1: 0.85                   # live F1 below this -> performance drift
+    min_sample_size: 500
+
+inference:
+  batch_size: 5000                 # rows per prediction batch
+
+adaptation:
+  min_rows: 3000                   # captured flows needed before adapting
+  min_confidence: 0.85             # pseudo-label confidence threshold
+  anchor_rows: 20000               # synthetic anchors blended in per adaptation
+
+api:
+  host: 0.0.0.0
+  port: 8000

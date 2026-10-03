@@ -1,0 +1,14 @@
+# MLflow tracking server backed by PostgreSQL with a local artifact store
+# (swap --artifacts-destination for an S3/GCS URI in production).
+FROM ghcr.io/mlflow/mlflow:v2.19.0
+
+RUN pip install --no-cache-dir psycopg2-binary==2.9.10
+
+EXPOSE 5000
+
+CMD ["mlflow", "server", \
+     "--host", "0.0.0.0", \
+     "--port", "5000", \
+     "--backend-store-uri", "postgresql://nad_user:nad_password@postgres:5432/mlflow", \
+     "--artifacts-destination", "/mlartifacts", \
+     "--serve-artifacts"]

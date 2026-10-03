@@ -1,0 +1,32 @@
+stages:
+  ingest:
+    cmd: python -m scripts.ingest --n 40000 --seed dvc-base --out data/raw/train.csv
+    deps:
+      - src/data_ingestion.py
+    outs:
+      - data/raw/train.csv
+  validate:
+    cmd: python -m scripts.validate --input data/raw/train.csv
+    deps:
+      - src/data_validation.py
+      - data/raw/train.csv
+  featurize:
+    cmd: python -m scripts.featurize --input data/raw/train.csv --out data/processed/train.parquet
+    deps:
+      - src/feature_engineering.py
+      - data/raw/train.csv
+    outs:
+      - data/processed/train.parquet
+  train:
+    cmd: python -m scripts.train --input data/raw/train.csv
+    deps:
+      - src/training.py
+      - src/models.py
+      - data/raw/train.csv
+    outs:
+      - models/
+      - data/processed/reference.parquet:
+          cache: true
+    metrics:
+      - data/metrics.json:
+          cache: true

@@ -1,0 +1,40 @@
+# Core ML
+numpy<2.3
+pandas>=2.2.3
+scikit-learn==1.6.1
+scipy>=1.14.1
+xgboost==2.1.4
+joblib>=1.4.2
+
+# Experiment tracking / model registry
+mlflow==2.19.0
+pyarrow>=18.1.0        # wheels for Python 3.13; pip will pick a compatible one
+
+# Storage / database
+SQLAlchemy>=2.0.35
+psycopg2-binary==2.9.10
+
+# Serving
+fastapi==0.115.2
+uvicorn[standard]==0.32.0
+httpx==0.27.2
+
+# Live traffic capture (Windows: also install Npcap)
+scapy>=2.6
+
+# Dashboard
+streamlit==1.39.0
+plotly==5.24.1
+
+# Utils
+python-dotenv==1.0.1
+pyyaml>=6.0.1
+requests>=2.32.3
+
+# Testing
+pytest==8.3.3
+
+# NOTE: apache-airflow is intentionally NOT pinned here.
+# It runs in containers (see docker-compose.yml + airflow/Dockerfile) because
+# its dependency set is sensitive to the host Python version.
+# Data versioning: `pip install dvc` locally (dvc push configured via dvc.yaml).
