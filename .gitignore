@@ -40,6 +40,10 @@ airflow/logs/
 airflow/*.db
 airflow/*.cfg
 
+# Session-local runtime leftovers
+.freebuff/
+.venv-airflow/
+
 # OS / IDE
 .DS_Store
 Thumbs.db
